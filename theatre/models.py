@@ -1,5 +1,7 @@
 from django.db import models
 
+from theatre_service import settings
+
 
 class Actor(models.Model):
     first_name = models.CharField(max_length=255)
@@ -37,4 +39,4 @@ class Ticker(models.Model):
 
 class Reservation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
