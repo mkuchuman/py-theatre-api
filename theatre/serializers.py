@@ -1,6 +1,7 @@
+from django.db import transaction
 from rest_framework.exceptions import ValidationError
 
-from theatre.models import Genre, Actor, TheatreHall, Play, Performance, Ticket
+from theatre.models import Genre, Actor, TheatreHall, Play, Performance, Ticket, Reservation
 from rest_framework import serializers
 
 
@@ -60,19 +61,6 @@ class PerformanceListSerializer(PerformanceSerializer):
                   )
 
 
-class PerformanceDetailSerializer(PerformanceSerializer):
-    play = PlaySerializer(many=False, read_only=True)
-    theatre_hall = TheatreHallSerializer(many=False, read_only=True)
-
-    class Meta:
-        model = Performance
-        field = ("id",
-                 "play",
-                 "theatre_hall",
-                 "show_time",
-                 )
-
-
 class TicketSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         data = super(TicketSerializer, self).validate(attrs)
@@ -102,3 +90,39 @@ class TicketSeatsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = ("row", "seat")
+
+
+class PerformanceDetailSerializer(PerformanceSerializer):
+    play = PlaySerializer(many=False, read_only=True)
+    theatre_hall = TheatreHallSerializer(many=False, read_only=True)
+    taken_places = TicketSeatsSerializer(
+        source="tickets", many=True, read_only=True
+    )
+
+    class Meta:
+        model = Performance
+        field = ("id",
+                 "play",
+                 "theatre_hall",
+                 "show_time",
+                 "taken_places"
+                 )
+
+
+class ReservationSerializer(serializers.ModelSerializer):
+    tickets = TicketSerializer(many=True, read_only=True, allow_empty=True)
+
+    class Meta:
+        model = Reservation
+        fields = ("id", "tickets", "created_at")
+
+    def create(self, validated_data):
+        with transaction.atomic():
+            tickets_data = validated_data.pop("tickets")
+            reservation = Reservation.objects.create(**validated_data)
+            for ticket in tickets_data:
+                Ticket.objects.create(reservation=reservation, **ticket)
+
+
+class ReservationListSerializer(serializers.ModelSerializer):
+    tickets = TicketSerializer(many=True, read_only=True)
