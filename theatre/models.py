@@ -42,7 +42,7 @@ class Performance(models.Model):
 class Ticker(models.Model):
     row = models.IntegerField()
     sear = models.IntegerField()
-    performance = models.ForeignKey(Performance, on_delete=models.CASCADE)
+    performance = models.ForeignKey(Performance, on_delete=models.CASCADE, related_name="tickets")
 
 
 class Reservation(models.Model):
