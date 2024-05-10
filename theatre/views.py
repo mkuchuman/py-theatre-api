@@ -2,10 +2,10 @@ from django.db.models import F, Count
 from django.shortcuts import render
 from rest_framework import viewsets, permissions
 
-from theatre.models import Genre, Actor, TheatreHall, Play, Performance
+from theatre.models import Genre, Actor, TheatreHall, Play, Performance, Reservation
 from theatre.serializers import GenreSerializer, ActorSerializer, TheatreHallSerializer, PlaySerializer, \
     PlayDetailSerializer, PlayListSerializer, PerformanceListSerializer, PerformanceSerializer, \
-    PerformanceDetailSerializer
+    PerformanceDetailSerializer, ReservationSerializer, ReservationListSerializer
 
 
 class GenreViewSet(viewsets.ModelViewSet):
@@ -59,3 +59,16 @@ class PerformanceViewSet(viewsets.ModelViewSet):
         if self.action == "retrieve":
             return PerformanceDetailSerializer
         return PerformanceSerializer
+
+
+class ReservationViewSet(viewsets.ModelViewSet):
+    queryset = Reservation.objects.prefetch_related(
+        "tickets__performance__play", "tickets__performance__theatre_hall"
+    )
+    serializer_class = ReservationSerializer
+    # permission_classes = ()
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ReservationListSerializer
+        return ReservationSerializer
