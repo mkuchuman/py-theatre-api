@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework import viewsets, permissions
 
-from theatre.models import Genre, Actor
-from theatre.serializers import GenreSerializer, ActorSerializer
+from theatre.models import Genre, Actor, TheatreHall
+from theatre.serializers import GenreSerializer, ActorSerializer, TheatreHallSerializer
 
 
 class GenreViewSet(viewsets.ModelViewSet):
@@ -14,4 +14,10 @@ class GenreViewSet(viewsets.ModelViewSet):
 class ActorViewSet(viewsets.ModelViewSet):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
+    # permission_classes = ()
+
+
+class TheatreHallViewSet(viewsets.ModelViewSet):
+    queryset = TheatreHall.objects.all()
+    serializer_class = TheatreHallSerializer
     # permission_classes = ()
