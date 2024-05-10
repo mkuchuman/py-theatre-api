@@ -1,4 +1,6 @@
-from theatre.models import Genre, Actor, TheatreHall, Play, Performance
+from rest_framework.exceptions import ValidationError
+
+from theatre.models import Genre, Actor, TheatreHall, Play, Performance, Ticket
 from rest_framework import serializers
 
 
@@ -69,3 +71,34 @@ class PerformanceDetailSerializer(PerformanceSerializer):
                  "theatre_hall",
                  "show_time",
                  )
+
+
+class TicketSerializer(serializers.ModelSerializer):
+    def validate(self, attrs):
+        data = super(TicketSerializer, self).validate(attrs)
+        performance = data["performance"]
+        Ticket.validate_ticket(
+            attrs["row"],
+            attrs["seat"],
+            performance.theatre_hall,
+            ValidationError,
+        )
+        return data
+
+    class Meta:
+        model = Ticket
+        fields = ("id", "row", "seat", "performance")
+
+
+class TicketListSerializer(TicketSerializer):
+    performance = PerformanceSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Ticket
+        fields = ("id", "row", "seat", "performance")
+
+
+class TicketSeatsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = ("row", "seat")
