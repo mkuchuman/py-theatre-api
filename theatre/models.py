@@ -28,6 +28,10 @@ class TheatreHall(models.Model):
     rows = models.IntegerField()
     seats_in_row = models.IntegerField()
 
+    @property
+    def capacity(self):
+        return self.seats_in_row * self.rows
+
 
 class Performance(models.Model):
     play = models.ForeignKey(Play, on_delete=models.CASCADE, related_name="performances")
