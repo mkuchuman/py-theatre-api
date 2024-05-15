@@ -11,14 +11,17 @@ class WaitForDatabaseCommand(BaseCommand):
         start_time = timezone.now()
         while not db_conn:
             try:
-                db_conn = connections["default"]
+                connection = connections['default']
+                with connection.cursor() as cursor:
+                    cursor.execute("SELECT 1")
+                db_conn = connection
             except OperationalError:
                 if timezone.now() - start_time > timezone.timedelta(minutes=1):
                     self.stdout.write(self.style.ERROR(
-                        "Database took too long to start. Exiting.")
-                    )
+                        "Database took too long to start. Exiting."
+                    ))
                     return
-                self.stdout.write("Database unavailable, waiting")
+                self.stdout.write("Database unavailable, waiting 1 second...")
                 time.sleep(1)
 
         self.stdout.write(self.style.SUCCESS("Database available!"))
