@@ -2,11 +2,24 @@ from django.db.models import F, Count
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from theatre.models import Genre, Actor, TheatreHall, Play, Performance, Reservation
+from theatre.models import (Genre,
+                            Actor,
+                            TheatreHall,
+                            Play,
+                            Performance,
+                            Reservation)
 from theatre.permissions import IsAdminOrIfAuthenticatedReadOnly
-from theatre.serializers import GenreSerializer, ActorSerializer, TheatreHallSerializer, PlaySerializer, \
-    PlayDetailSerializer, PlayListSerializer, PerformanceListSerializer, PerformanceSerializer, \
-    PerformanceDetailSerializer, ReservationSerializer, ReservationListSerializer
+from theatre.serializers import (GenreSerializer,
+                                 ActorSerializer,
+                                 TheatreHallSerializer,
+                                 PlaySerializer,
+                                 PlayDetailSerializer,
+                                 PlayListSerializer,
+                                 PerformanceListSerializer,
+                                 PerformanceSerializer,
+                                 PerformanceDetailSerializer,
+                                 ReservationSerializer,
+                                 ReservationListSerializer)
 
 
 class GenreViewSet(viewsets.ModelViewSet):

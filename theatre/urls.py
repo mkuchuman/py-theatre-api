@@ -1,7 +1,11 @@
 from rest_framework.routers import DefaultRouter
 
-from theatre.views import GenreViewSet, ActorViewSet, TheatreHallViewSet, PlayViewSet, PerformanceViewSet, \
-    ReservationViewSet
+from theatre.views import (GenreViewSet,
+                           ActorViewSet,
+                           TheatreHallViewSet,
+                           PlayViewSet,
+                           PerformanceViewSet,
+                           ReservationViewSet)
 
 app_name = "theatre"
 

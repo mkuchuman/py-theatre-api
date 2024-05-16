@@ -11,7 +11,7 @@ class WaitForDatabaseCommand(BaseCommand):
         start_time = timezone.now()
         while not db_conn:
             try:
-                connection = connections['default']
+                connection = connections["default"]
                 with connection.cursor() as cursor:
                     cursor.execute("SELECT 1")
                 db_conn = connection
